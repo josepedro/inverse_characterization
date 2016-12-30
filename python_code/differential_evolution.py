@@ -101,6 +101,7 @@ Note: [0.5,1.0] dither is the default behavior unless f is set to a value other 
     self.best_score = numpy.min( self.scores )
     self.best_vector = self.population[ numpy.nanargmin( self.scores ) ]
     self.evaluator.x = self.best_vector
+
     if self.show_progress:
       self.evaluator.print_status(
             numpy.min(self.scores),
@@ -149,7 +150,7 @@ Note: [0.5,1.0] dither is the default behavior unless f is set to a value other 
     for ii in xrange(self.vector_length):
       delta  = self.evaluator.domain[ii][1]-self.evaluator.domain[ii][0]
       offset = self.evaluator.domain[ii][0]
-      random_values = numpy.random.random_integers(low=0.0, high=1.0, size=self.population_size)
+      random_values = numpy.random.uniform(size=self.population_size)
       random_values = random_values*delta+offset
       # now please place these values ni the proper places in the
       # vectors of the population we generated
@@ -165,7 +166,7 @@ Note: [0.5,1.0] dither is the default behavior unless f is set to a value other 
 
   def evolve(self):
     for ii in xrange(self.population_size):
-      rnd = numpy.random.random_integers(low=0.0, high=1.0, size=self.population_size-1)
+      rnd = numpy.random.uniform(size=self.population_size-1)
       permut = numpy.argsort(rnd)
       # make parent indices
       i1=permut[0]
@@ -189,7 +190,7 @@ Note: [0.5,1.0] dither is the default behavior unless f is set to a value other 
 
       vi = x1 + use_f*(x2-x3)
       # prepare the offspring vector please
-      rnd = numpy.random.random_integers(low=0.0, high=1.0, size=self.vector_length)
+      rnd = numpy.random.uniform(size=self.vector_length)
       permut = numpy.argsort(rnd)
       test_vector = self.population[ii].copy()
       # first the parameters that sure cross over
@@ -233,7 +234,12 @@ class test_rosenbrock_function(object):
     self.x = None
     self.n = 2*dim
     self.dim = dim
-    self.domain = [ (1,3) ]*self.n
+    # ESSE CARA AQUI DOMINIO
+    self.domain = [ (1,3), (2,3) ]
+    print '----------------------------------'
+    print self.domain
+    print '----------------------------------'
+    # ESSE CARA AQUI PEGA O MINIMO PARA SETAR O TAMANHO DA POPULACAO population_size=min(self.n*10,40)
     self.optimizer =  differential_evolution_optimizer(self,population_size=min(self.n*10,40),n_cross=self.n,cr=0.9, eps=1e-8, show_progress=True)
     print list(self.x)
     for x in self.x:
@@ -252,7 +258,7 @@ class test_rosenbrock_function(object):
 
   def print_status(self, mins,means,vector,txt):
     print txt,mins, means, list(vector)
-
+    #a = 3
 
 def run():
   random.seed(0)
