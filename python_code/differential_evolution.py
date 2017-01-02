@@ -75,6 +75,7 @@ Note: [0.5,1.0] dither is the default behavior unless f is set to a value other 
                show_progress_nth_cycle=1,
                insert_solution_vector=None,
                dither_constant=0.4):
+    print 'quatro'
     self.dither=dither_constant
     self.show_progress=show_progress
     self.show_progress_nth_cycle=show_progress_nth_cycle
@@ -109,8 +110,9 @@ Note: [0.5,1.0] dither is the default behavior unless f is set to a value other 
             self.population[ numpy.nanargmin( self.scores ) ],
             'Final')
 
-
+  # ESSA FUNCAO EH O CERNE DE TODO CODIGO
   def optimize(self):
+    print 'cinco'
     # initialise the population please
     self.make_random_population()
     # score the population please
@@ -118,6 +120,7 @@ Note: [0.5,1.0] dither is the default behavior unless f is set to a value other 
     converged = False
     monitor_score = numpy.min( self.scores )
     self.count = 0
+    # ESSE WHILE EH IMPORTANTE PRA CARALHO POIS ELE QUE VAI EVOLUIR AS POPULACOES ATE CONVERGIR
     while not converged:
       self.evolve()
       location = numpy.nanargmin( self.scores )
@@ -147,6 +150,7 @@ Note: [0.5,1.0] dither is the default behavior unless f is set to a value other 
         converged =True
 
   def make_random_population(self):
+    print 'seis'
     for ii in xrange(self.vector_length):
       delta  = self.evaluator.domain[ii][1]-self.evaluator.domain[ii][0]
       offset = self.evaluator.domain[ii][0]
@@ -160,11 +164,14 @@ Note: [0.5,1.0] dither is the default behavior unless f is set to a value other 
       self.population[0] = self.seeded
 
   def score_population(self):
+    print 'sete'
     for vector,ii in zip(self.population,xrange(self.population_size)):
       tmp_score = self.evaluator.target(vector)
       self.scores[ii]=tmp_score
 
+  # FUNCAO EVOLUIR MUITO IMPORTANTE
   def evolve(self):
+    print 'evoluindo a galera'
     for ii in xrange(self.population_size):
       rnd = numpy.random.uniform(size=self.population_size-1)
       permut = numpy.argsort(rnd)
@@ -231,6 +238,7 @@ class test_function(object):
 
 class test_rosenbrock_function(object):
   def __init__(self, dim=5):
+    print "tres"
     self.x = None
     self.n = 2*dim
     self.dim = dim
@@ -247,12 +255,23 @@ class test_rosenbrock_function(object):
 
 
   def target(self, vector):
+    print 'passei na funcao principal'
     tmp = vector.copy()
+    # AQUI NESSA BAGAÇA EH SOH UM VALOR DE X
     x_vec = vector[0:self.dim]
+    # AQUI NESSA BAGAÇA EH SOH UM VALOR DE Y
     y_vec = vector[self.dim:]
+    print 'printando os valores de x'
+    print x_vec
+    print 'printando os valores de y'
+    print y_vec
     result=0
     for x,y in zip(x_vec,y_vec):
-      result+=100.0*((y-x*x)**2.0) + (1-x)**2.0
+      # EIS QUE AQUI EU COLOCO A PARADA DA RESTRICAO!!! ACHEI!!!
+      if 2*x > y:
+        result+=100.0*((y-x*x)**2.0) + (1-x)**2.0
+      else:
+        result+=9999999999
     #print list(x_vec), list(y_vec), result
     return result
 
@@ -261,6 +280,7 @@ class test_rosenbrock_function(object):
     #a = 3
 
 def run():
+  print "dois"
   random.seed(0)
   numpy.random.seed(0)
   test_rosenbrock_function(1)
@@ -268,4 +288,5 @@ def run():
 
 
 if __name__ == "__main__":
+  print "um"
   run()
