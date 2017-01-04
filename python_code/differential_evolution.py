@@ -170,11 +170,6 @@ Note: [0.5,1.0] dither is the default behavior unless f is set to a value other 
     print 'sete'
     for vector,ii in zip(self.population,xrange(self.population_size)):
       tmp_score = self.evaluator.target(vector)
-      print '------------------'
-      print 'tamamho desse array de scores'
-      if type(tmp_score) is numpy.ndarray:
-        print len(tmp_score)
-      print '------------------'
       self.scores[ii]=tmp_score
 
   # FUNCAO EVOLUIR MUITO IMPORTANTE
@@ -290,8 +285,12 @@ class test_rosenbrock_function(object):
 class parametros_inversos_dupla_funcao(object):
   def __init__(self, dim=5):
     self.x = None
-    self.n = 6*dim
+    self.n = dim
     self.dim = dim
+    print 'dimensao'
+    print self.dim
+    print 'numero variaveis'
+    print self.n
     # ESSE CARA AQUI DOMINIO
     '''
     paramDefCell = {'parameter1', [5000 300000], 10     # RESISITIVDADE AO FLUXO
@@ -302,21 +301,18 @@ class parametros_inversos_dupla_funcao(object):
                 'parameter6', (64, 64), 0.01 };      # DENSIDADE
     '''
 
-    self.domain = [ (5000, 300000), (0.90, 0.99), (1, 4), (10e-6, 500e-6), (10e-6, 500e-6), (64, 64)]
+    self.domain = [ (5000, 300000), (0.90, 0.99), (1, 4), (10e-6, 500e-6), (10e-6, 500e-6), (64, 64), (1,3)]
     print '----------------------------------'
     print self.domain
     print '----------------------------------'
     # ESSE CARA AQUI PEGA O MINIMO PARA SETAR O TAMANHO DA POPULACAO population_size=min(self.n*10,40)
-    self.optimizer =  differential_evolution_optimizer(self,population_size=100,n_cross=self.n,cr=1, eps=1e-6, show_progress=True)
+    self.optimizer =  differential_evolution_optimizer(self,population_size=100,n_cross=5,cr=1, eps=1e-6, show_progress=True)
     print list(self.x)
     for x in self.x:
       assert abs(x-1.0)<1e-2
 
 
   def target(self, vector):
-    print 'passei na funcao principal'
-    print 'printando os valores'
-    print vector
 
     result=0
     # EIS QUE AQUI EU COLOCO A PARADA DA RESTRICAO!!! ACHEI!!!
@@ -324,7 +320,13 @@ class parametros_inversos_dupla_funcao(object):
     COMPRIMENTO CARACTERÍSTICO VISCOSO
     COMPRIMENTO CARACTERÍSTICO TÉRMICO
     '''
-    #if vector[3] - vector[4] < 0:
+    # if vector[4] > vector[3] and \
+    # vector[0] > 5000 and vector[0] < 300000 and \
+    # vector[1] > 0.90 and vector[1] < 0.99 and \
+    # vector[2] > 1 and vector[2] < 4 and \
+    # vector[3] > 10e-6 and vector[3] < 500e-6 and \
+    # vector[4] > 10e-6 and vector[4] < 500e-6 and \
+    # vector[]:
     result+=self.objetivo_allard_limp_funcao_dupla(vector)
     #else:
      # result+=9999999999
@@ -336,9 +338,9 @@ class parametros_inversos_dupla_funcao(object):
     #a = 3
 
   def objetivo_allard_limp_funcao_dupla(self, vector):
-    params_allard_rigido_simples = self.allard_rigido(0.025,2000,vector[0],vector[1],vector[2],vector[3],vector[4])
+    params_allard_rigido_simples = self.allard_rigido(0.025,2000,vector[0],vector[1],vector[2],vector[3],vector[4], vector[6])
     Zs1 = params_allard_rigido_simples['Zs']
-    params_allard_rigido_duplo = self.allard_rigido(2*0.025,2000,vector[0],vector[1],vector[2],vector[3],vector[4])
+    params_allard_rigido_duplo = self.allard_rigido(2*0.025,2000,vector[0],vector[1],vector[2],vector[3], vector[4], vector[6])
     Zs2 = params_allard_rigido_simples['Zs']
 
     mat = scipy.io.loadmat('Z_exp.mat')
@@ -352,9 +354,13 @@ class parametros_inversos_dupla_funcao(object):
     F_obj_2 = F_obj_2.sum()
 
     F_obj = 3*F_obj_1 + F_obj_2
+
+    #print 'F_obj'
+    #print F_obj
+
     return F_obj
 
-  def allard_rigido(self, L, fmax, sigma, phi, alpha_inf, Lambda_material, Lambda_l_material):
+  def allard_rigido(self, L, fmax, sigma, phi, alpha_inf, Lambda_material, Lambda_l_material, fator):
     '''
     ## Modelo de material poroso de estrutura rigido
     # Cálcula densidade efetiva dinâmica e compressibilidade efetiva para
@@ -390,7 +396,9 @@ class parametros_inversos_dupla_funcao(object):
     phi_material =  phi;         # Porosidade 60#
     alpha_inf_material = alpha_inf;    # Tortuosidade
     Lambda = Lambda_material;
-    Lambda_l = Lambda_l_material;
+    #fator = 1
+    Lambda_l = Lambda_material*fator 
+    #Lambda_l = Lambda_l_material;
     q_0 = eta/sigma;
     # q_l_0 = q_0*Lambda_l/Lambda;
     q_l_0 = (phi_material*Lambda_l*Lambda_l)/8.;
@@ -439,7 +447,7 @@ class parametros_inversos_dupla_funcao(object):
 def run():
   random.seed(0)
   numpy.random.seed(0)
-  parametros_inversos_dupla_funcao(1)
+  parametros_inversos_dupla_funcao(7)
   print "OK"
 
 
