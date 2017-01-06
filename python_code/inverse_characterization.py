@@ -101,6 +101,9 @@ def allard_rigido(L, fmax, sigma, phi, alpha_inf, Lambda_material, fator):
     A = 1 + numpy.multiply(B, E)
     rho_rigido = rho_0*alpha_inf_material * A; # densidade dinâmica efetiva
 
+    print 'rho_rigido'
+    print numpy.mean(rho_rigido)
+
     F = eta*(phi_material**2)*(Lambda_l**2)
     E = numpy.multiply(4*rho_0*Pr*(q_l_0**2), w)
     D =  1 + (1j* numpy.divide(E, F))
@@ -110,6 +113,9 @@ def allard_rigido(L, fmax, sigma, phi, alpha_inf, Lambda_material, fator):
     B = 1 + numpy.multiply(C, numpy.power(D,(1/2)))
     A = numpy.divide(gamma-(gamma-1), B)
     K_ef = numpy.divide(gamma*P_0, A) # módulo de compressibilidade 
+
+    print 'compressibilidade'
+    print numpy.mean(K_ef)
 
     Zc = numpy.sqrt(numpy.multiply(rho_rigido, K_ef))
     A = numpy.divide(rho_rigido, K_ef)
@@ -151,3 +157,13 @@ vector = numpy.array([24930, 0.91, 1, 4.1000e-05, 2.847222222222222, 64])
 f_obj = objetivo_allard_limp_funcao_dupla(vector)
 
 print f_obj
+
+'''
+compressibilidade da errado
+
+compressibilidade
+(5.34825643657e+12-116.617165994e+04j)
+
+1.1110e+05 + 1.1826e+04i
+
+'''
