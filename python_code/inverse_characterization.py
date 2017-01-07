@@ -62,15 +62,15 @@ def allard_rigido(L, fmax, sigma, phi, alpha_inf, Lambda_material, fator):
     # Alpha = Coeficiente de absorcao
     '''
 
-    L_material = L; # espessura do material poroso
-    rho_0 = 1.204;      # Densidade [kg/m^3]
-    T = 20;               # Temperatura
-    c_0 = (331.2+0.6*T);# velocidade de propagacao no meio [m/s]
-    eta = 1.84e-5;      # Coeficiente de viscosidade, viscosidade absoluta ou viscosidade dinamica
-    gamma = 1.4;        # Razão de calores específicos (gamma=c_p/c_v)
-    k_f = 0.026;        # Condutibilidade térmica do fluido [W/mK]
-    P_0 = 101320;       # Pressão estática do meio [Pa]
-    c_p = 1.0035e3;     # Coeficiente de Calor específico a pressão constante (c_p), (c_v é coef. calor esp. a VOLUME cte)
+    L_material = numpy.complex256(L); # espessura do material poroso
+    rho_0 = numpy.complex256(1.204);      # Densidade [kg/m^3]
+    T = numpy.complex256(20);               # Temperatura
+    c_0 = numpy.complex256(331.2+0.6*T);# velocidade de propagacao no meio [m/s]
+    eta = numpy.complex256(1.84e-5);      # Coeficiente de viscosidade, viscosidade absoluta ou viscosidade dinamica
+    gamma = numpy.complex256(1.4);        # Razão de calores específicos (gamma=c_p/c_v)
+    k_f = numpy.complex256(0.026);        # Condutibilidade térmica do fluido [W/mK]
+    P_0 = numpy.complex256(101320);       # Pressão estática do meio [Pa]
+    c_p = numpy.complex256(1.0035e3);     # Coeficiente de Calor específico a pressão constante (c_p), (c_v é coef. calor esp. a VOLUME cte)
     Pr = (eta*c_p)/k_f;   # Número de Prandtl (???)--- c_p calor específico, k_f é
 
     # Parâmetros Macro
@@ -92,9 +92,8 @@ def allard_rigido(L, fmax, sigma, phi, alpha_inf, Lambda_material, fator):
     D = (eta*(phi_material**2)*(Lambda**2));
     C = (4*w*rho_0*(q_0**2)*(alpha_inf_material**2));
     #numpy.divide(a,b,dtype=float)
-    G = (1j*w*rho_0*alpha_inf_material*q_0)
-    G[G==0] = numpy.finfo(float).eps
-    B = numpy.divide((phi_material*eta),G)
+    G = numpy.nan_to_num((1j*w*rho_0*alpha_inf_material*q_0))
+    B = numpy.nan_to_num(numpy.divide((phi_material*eta),G))
     #B = ((phi_material*eta)/(1j*w*rho_0*alpha_inf_material*q_0));
     E = ( 1 + 1j*numpy.divide(C, D));
     E = numpy.power(E,1/2)
@@ -104,27 +103,29 @@ def allard_rigido(L, fmax, sigma, phi, alpha_inf, Lambda_material, fator):
     print 'rho_rigido'
     print numpy.mean(rho_rigido)
 
-    F = eta*(phi_material**2)*(Lambda_l**2)
-    E = numpy.multiply(4*rho_0*Pr*(q_l_0**2), w)
+    F = numpy.complex256(eta*(phi_material**2)*(Lambda_l**2))
+    E = numpy.complex256(numpy.multiply(4*rho_0*Pr*(q_l_0**2), w))
     D =  1 + (1j* numpy.divide(E, F))
     G = (1j*w*rho_0*Pr*q_l_0)
-    G[G==0] = numpy.finfo(float).eps
-    C = numpy.divide((phi_material*eta), G)
+    C = numpy.divide(numpy.complex256(phi_material*eta), numpy.complex256(G))
+    C = numpy.nan_to_num(C)
+    # C e D tao errados
     B = 1 + numpy.multiply(C, numpy.power(D,(1/2)))
     A = numpy.divide(gamma-(gamma-1), B)
-    K_ef = numpy.divide(gamma*P_0, A) # módulo de compressibilidade 
+    K_ef = numpy.nan_to_num(numpy.divide(gamma*P_0, A)) # módulo de compressibilidade 
+    print 'A'
+    print numpy.mean(A)
 
-    print 'compressibilidade'
-    print numpy.mean(K_ef)
+    #print 'compressibilidade'
+    #print numpy.mean(K_ef)
 
     Zc = numpy.sqrt(numpy.multiply(rho_rigido, K_ef))
     A = numpy.divide(rho_rigido, K_ef)
     B = numpy.power(A,(1/2))
     kc_L = numpy.multiply(w, B)
     A = numpy.multiply(kc_L, L_material)
-    H = numpy.multiply(phi_material,numpy.arctan(A))
-    H[H==0] = numpy.finfo(float).eps
-    Zs = -1j*numpy.divide(Zc, H)
+    H = numpy.nan_to_num(numpy.multiply(phi_material,numpy.arctan(A)))
+    Zs = numpy.nan_to_num(-1j*numpy.divide(Zc, H))
     
     alpha = 1 - numpy.power((numpy.absolute(numpy.divide((Zs - rho_0*c_0),(Zs + rho_0*c_0)))), 2);
 
