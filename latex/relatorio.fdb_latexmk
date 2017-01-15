@@ -1,12 +1,11 @@
 # Fdb version 3
-["pdflatex"] 1484497896 "relatorio.tex" "relatorio.pdf" "relatorio" 1484497897
+["pdflatex"] 1484514680 "relatorio.tex" "relatorio.pdf" "relatorio" 1484514680
   "/etc/texmf/web2c/texmf.cnf" 1454067600 1101 af7716885e081ab43982cab7b4672c1a ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1272929888 3287 e6b82fe08f5336d4d5ebc73fb1152e87 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1136768653 1324 c910af8c371558dc20f2d7822f66fe64 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr12.tfm" 1136768653 1288 655e228510b4c2a1abe905c368440826 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr17.tfm" 1136768653 1292 296a67155bdbfc32aa9c636f21e91433 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb" 1248133631 32080 340ef9bf63678554ee606688e7b5339d ""
-  "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1248133631 35752 024fb6c41858982481f6968b5fc26508 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb" 1248133631 32722 d7379af29a190c3f453aba36302ff5a9 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb" 1248133631 32362 179c33bbf43f19adbb3825bb4e36e57a ""
   "/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii" 1337017135 71627 94eb9990bed73c364d7f53f960cc8c5b ""
@@ -50,11 +49,13 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1435377840 31349 7675f8adfbe12aae865d340d35423a49 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1454067759 1779312 b2f993ff39f888114b7dddf8751f0ae0 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1454067832 3851001 965d00c993c73d9103c0b3e24c047c47 ""
-  "relatorio.aux" 1484497897 738 ee5e803a450717e751e76eea54a5c966 ""
-  "relatorio.tex" 1484497880 2842 da7544cf21e134336e0430127ea106c3 ""
-  "relatorio.toc" 1484497897 450 d563ed4f76ef045078fef6a87784ffcb ""
+  "relatorio.aux" 1484514680 264 10b0e4c8a6b4a88b01812765624256ff ""
+  "relatorio.tex" 1484506447 1228 4e7671caeef6cd91a9b1d2a6bd32605d ""
+  "relatorio.toc" 1484514680 84 3d6e7364ffc7fcbe2bb6ee6cd95db028 ""
+  "resultados/espumapreta.tex" 1484514674 23 1c5278dc2a4a8696886b996d3548cb9b ""
+  "resultados/resultados.tex" 1484514674 35 0168e8cf055517c2a4bd2d580c29a9f4 ""
   (generated)
+  "relatorio.aux"
   "relatorio.toc"
   "relatorio.log"
-  "relatorio.aux"
   "relatorio.pdf"

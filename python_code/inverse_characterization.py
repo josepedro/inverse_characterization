@@ -3,8 +3,9 @@
 from scipy.optimize import differential_evolution
 import numpy as np
 import scipy.io
-#import math
 import matplotlib.pyplot as plt
+import os
+
 '''
 #best1exp
 #f = 0.935
@@ -61,10 +62,15 @@ def m_Johnson_Champoux3_deltaf(fmax,fmin,deltaf,espessura,sigma,phi,alpha_inf,la
 
     params_JC = {'Zs': Zs, 'alpha': Abs}
     
-    print fator
+    #print fator
 
     return params_JC
     
+def write_results_in_latex(material_latex_file, name_file, result):
+	name_1, name_2 = name_file.split('_')
+	material_latex_file.write("\section{" + name_1 + ' ' + name_2 + '}\n')
+
+
 
 if __name__ == "__main__":
 
@@ -88,29 +94,63 @@ if __name__ == "__main__":
 	espessura1=0.024
 	espessura2=2*0.024
 
-	simples = scipy.io.loadmat('../data/espuma_preta/espumapreta_24mm_simples.mat')
-	duplo = scipy.io.loadmat('../data/espuma_preta/espumapreta_48mm_duplo.mat')
-	A_referencia_esp1 = simples['A_A1']
-	A_referencia_esp1=np.ravel(A_referencia_esp1)
-	A_referencia_esp2 = duplo['A_A1']
-	A_referencia_esp2=np.ravel(A_referencia_esp2)
+
+	# 1 - Criar arquivo resultados
+	results_dir_file_string = '../results/'
+	latex_results_file = open('../latex/resultados/resultados.tex', 'w')
+
+	# 2 - Escolher o material que vou usar
+	materials_list = os.listdir("../data")
+	materials_list.sort(key=lambda x:(not x.islower(), x))
+	materials_list_name_1, materials_list_name_2 = materials_list[0].split('_')
+	materials_list_name = materials_list_name_1 + materials_list_name_2
+	input_string_latex = "\input{" + 'resultados/' + materials_list_name + '.tex}\n'
+	latex_results_file.write(input_string_latex)
+	latex_results_material_file = open('../latex/resultados/' + materials_list_name + '.tex', 'w')
+
+	# ========================================================
+	# 2.1 - Escolhendo agora de verdade
+	# simples = scipy.io.loadmat('../data/espuma_preta/espumapreta_24mm_simples.mat')
+	# duplo = scipy.io.loadmat('../data/espuma_preta/espumapreta_48mm_duplo.mat')
+	# A_referencia_esp1 = simples['A_A1']
+	# A_referencia_esp1=np.ravel(A_referencia_esp1)
+	# A_referencia_esp2 = duplo['A_A1']
+	# A_referencia_esp2=np.ravel(A_referencia_esp2)
 
 
-	bounds = [ (5000, 300000), (0.80, 0.99), (1, 4), (10e-6, 500e-6), (1,6), (64, 64)]
-	result = differential_evolution(objetivo_allard_limp_funcao_dupla, bounds, strategy='best1exp', disp=True, popsize=20, mutation=0.935, recombination=1)
+	# bounds = [ (5000, 300000), (0.80, 0.99), (1, 4), (10e-6, 500e-6), (1,6), (64, 64)]
+	# result = differential_evolution(objetivo_allard_limp_funcao_dupla, bounds, strategy='best1exp', disp=True, popsize=20, mutation=0.935, recombination=1)
 
-	print result.x
-	print result.fun
+	# # guardando os resultados
+	# material_results_file_string = results_dir_file_string + materials_list[0] + '.dat'
+	# material_results_file = open(material_results_file_string, 'w')
+	# for item in result.x:
+	# 	material_results_file.write("%s\n" % item)
+	# material_results_file.write("%s\n" % result.fun)
+	# # escrevendo no latex
+	# write_results_in_latex(latex_results_material_file, materials_list[0], result)
+	# print result.x
+	# print result.fun
 
-	params_JC_otim1=m_Johnson_Champoux3_deltaf(fmax,fmin,deltaf,espessura1,result.x[0],result.x[1],result.x[2],result.x[3],result.x[4],result.x[5],structure='rigid')
-	params_JC_otim2=m_Johnson_Champoux3_deltaf(fmax,fmin,deltaf,espessura2,result.x[0],result.x[1],result.x[2],result.x[3],result.x[4],result.x[5],structure='rigid')
-	alpha_otim1=params_JC_otim1['alpha']
-	alpha_otim2=params_JC_otim2['alpha']
+	result = 0
+	write_results_in_latex(latex_results_material_file, materials_list[0], result)
+	
+
+	# # compile latex
+	os.system('cd ../latex && latexmk -pdf && evince relatorio.pdf')
 
 
-	plt.figure(1)
-	plt.plot(f[200:5500+1],A_referencia_esp1[200:5500+1],f[200:5500+1],A_referencia_esp2[200:5500+1],f[200:5500+1],alpha_otim1[200:5500+1],f[200:5500+1],alpha_otim2[200:5500+1])
-	plt.xlabel('frequency')
-	plt.ylabel('alpha')
-	plt.grid()
-	plt.show()
+
+
+	# params_JC_otim1=m_Johnson_Champoux3_deltaf(fmax,fmin,deltaf,espessura1,result.x[0],result.x[1],result.x[2],result.x[3],result.x[4],result.x[5],structure='rigid')
+	# params_JC_otim2=m_Johnson_Champoux3_deltaf(fmax,fmin,deltaf,espessura2,result.x[0],result.x[1],result.x[2],result.x[3],result.x[4],result.x[5],structure='rigid')
+	# alpha_otim1=params_JC_otim1['alpha']
+	# alpha_otim2=params_JC_otim2['alpha']
+
+
+	# plt.figure(1)
+	# plt.plot(f[200:5500+1],A_referencia_esp1[200:5500+1],f[200:5500+1],A_referencia_esp2[200:5500+1],f[200:5500+1],alpha_otim1[200:5500+1],f[200:5500+1],alpha_otim2[200:5500+1])
+	# plt.xlabel('frequency')
+	# plt.ylabel('alpha')
+	# plt.grid()
+	# plt.show()
