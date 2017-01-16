@@ -1,2 +1,0 @@
-\select@language {portuges}
-\contentsline {section}{\numberline {1}espuma preta}{1}

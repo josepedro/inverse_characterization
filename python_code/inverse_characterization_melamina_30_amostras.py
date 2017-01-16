@@ -22,24 +22,14 @@ def vector_frequencies(fmax,fmin,deltaf):
         
 #%%
 def objetivo_allard_limp_funcao_dupla(x):
-    params_JC_simples = m_Johnson_Champoux3_deltaf(fmax,fmin,deltaf,espessura1,x[0],x[1],x[2],x[3],x[4],x[5],structure='rigid')
-    A1 = params_JC_simples['alpha']
-    params_JC_duplo = m_Johnson_Champoux3_deltaf(fmax,fmin,deltaf,espessura2,x[0],x[1],x[2],x[3],x[4],x[5],structure='rigid')
-    A2 = params_JC_duplo['alpha']
-
-
-    F_obj_1 = np.absolute(A_referencia_esp1[1000:5000+1]-A1[1000:5000+1])**2
-#    F_obj_1 = np.absolute(Z_referencia_esp1[500:1650+1]/413-Zs1[500:1650+1]/413)**2
-    F_obj_1 = F_obj_1.sum()
-
-
-    F_obj_2 = np.absolute(A_referencia_esp2[1000:5000+1]-A2[1000:5000+1])**2
-#    F_obj_2 = np.absolute(Z_referencia_esp2[500:1650+1]/413-Zs2[500:1650+1]/413)**2
-    F_obj_2 = F_obj_2.sum()
-
-    F_obj = F_obj_1 + F_obj_2
- 
-    return F_obj
+	params_JC_simples = m_Johnson_Champoux3_deltaf(fmax,fmin,deltaf,espessura1,x[0],x[1],x[2],x[3],x[4],x[5],structure='rigid');
+	A1 = params_JC_simples['alpha']
+	A = np.concatenate((A_referencia_esp1[600:1000+1],A_referencia_esp1[2500:5000+1]))
+	B = np.concatenate((A1[600:1000+1],A1[2500:5000+1]));
+	F_obj_1 = np.absolute( A - B )**2;
+	F_obj_1 = F_obj_1.sum();
+	F_obj = F_obj_1;
+	return F_obj
 
 #%%
 def m_Johnson_Champoux3_deltaf(fmax,fmin,deltaf,espessura,sigma,phi,alpha_inf,lambda_v,fator,rho,structure='rigid'):
@@ -85,7 +75,7 @@ if __name__ == "__main__":
 	fmin=0
 	deltaf=1
 	[f,omega]=vector_frequencies(fmax,fmin,deltaf)
-	material_name = 'la32'
+	material_name = 'melamina_30_amostras'
 	estrutura = 'rigid'
 	espessuras_materiais = {'espuma_preta':[0.024, 2*0.024],
 	'fibra_amarela':[0.013, 2*0.013],
@@ -101,8 +91,8 @@ if __name__ == "__main__":
 	'melamina_30_amostras':10}
 	densidade = densidades_materiais[material_name]
 	espessuras = espessuras_materiais[material_name] 
-	espessura1 = espessuras[0]
-	espessura2 = espessuras[1]
+	espessura1 = espessuras
+	#espessura2 = espessuras[1]
 
 	# 1 - Lendo os materiais
 	materials_list = os.listdir("../data")
@@ -113,15 +103,15 @@ if __name__ == "__main__":
 	datas_materials_list = os.listdir("../data/" + material_name)
 	datas_materials_list.sort(key=lambda x:(not x.islower(), x))
 	simples = scipy.io.loadmat('../data/' + material_name + '/' + datas_materials_list[0])
-	duplo = scipy.io.loadmat('../data/' + material_name + '/' + datas_materials_list[1])
+	#duplo = scipy.io.loadmat('../data/' + material_name + '/' + datas_materials_list[1])
 
 	# 3 - Indo para um tipo de amostra de um material
 	for numero_amostra in range(1, 6):
 		amostra = 'A_A' + str(numero_amostra)
 		A_referencia_esp1 = simples[amostra]
 		A_referencia_esp1 = np.ravel(A_referencia_esp1)
-		A_referencia_esp2 = duplo[amostra]
-		A_referencia_esp2 = np.ravel(A_referencia_esp2)
+		#A_referencia_esp2 = duplo[amostra]
+		#A_referencia_esp2 = np.ravel(A_referencia_esp2)
 
 		# 4 - Optimizando
 		bounds = [ (5000, 300000), (0.80, 0.99), (1, 4), (10e-6, 500e-6), (1,6), (densidade, densidade)]
@@ -136,12 +126,10 @@ if __name__ == "__main__":
 		print result.fun
 
 		params_JC_otim1=m_Johnson_Champoux3_deltaf(fmax,fmin,deltaf,espessura1,result.x[0],result.x[1],result.x[2],result.x[3],result.x[4],result.x[5],structure=estrutura)
-		params_JC_otim2=m_Johnson_Champoux3_deltaf(fmax,fmin,deltaf,espessura2,result.x[0],result.x[1],result.x[2],result.x[3],result.x[4],result.x[5],structure=estrutura)
 		alpha_otim1=params_JC_otim1['alpha']
-		alpha_otim2=params_JC_otim2['alpha']
 
 		plt.figure(numero_amostra)
-		plt.plot(f[200:5500+1],A_referencia_esp1[200:5500+1],f[200:5500+1],A_referencia_esp2[200:5500+1],f[200:5500+1],alpha_otim1[200:5500+1],f[200:5500+1],alpha_otim2[200:5500+1])
+		plt.plot(f[200:5500+1],A_referencia_esp1[200:5500+1],f[200:5500+1],alpha_otim1[200:5500+1])
 		plt.xlabel('frequency')
 		plt.ylabel('alpha')
 		plt.grid()

@@ -28,12 +28,16 @@ def objetivo_allard_limp_funcao_dupla(x):
     A2 = params_JC_duplo['alpha']
 
 
-    F_obj_1 = np.absolute(A_referencia_esp1[1000:5000+1]-A1[1000:5000+1])**2
+    A = np.concatenate(( A_referencia_esp1[600:1000+1] , A_referencia_esp1[2500:5000+1] ))
+    B = np.concatenate(( A1[600:1000+1] , A1[2500:5000+1] ))
+    F_obj_1 = np.absolute( A - B )**2
 #    F_obj_1 = np.absolute(Z_referencia_esp1[500:1650+1]/413-Zs1[500:1650+1]/413)**2
     F_obj_1 = F_obj_1.sum()
 
 
-    F_obj_2 = np.absolute(A_referencia_esp2[1000:5000+1]-A2[1000:5000+1])**2
+    A = np.concatenate(( A_referencia_esp2[600:1000+1] , A_referencia_esp2[2500:5000+1] ))
+    B = np.concatenate(( A2[600:1000+1] , A2[2500:5000+1] ))
+    F_obj_2 = np.absolute(A - B)**2
 #    F_obj_2 = np.absolute(Z_referencia_esp2[500:1650+1]/413-Zs2[500:1650+1]/413)**2
     F_obj_2 = F_obj_2.sum()
 
@@ -85,7 +89,7 @@ if __name__ == "__main__":
 	fmin=0
 	deltaf=1
 	[f,omega]=vector_frequencies(fmax,fmin,deltaf)
-	material_name = 'la32'
+	material_name = 'melamina'
 	estrutura = 'rigid'
 	espessuras_materiais = {'espuma_preta':[0.024, 2*0.024],
 	'fibra_amarela':[0.013, 2*0.013],

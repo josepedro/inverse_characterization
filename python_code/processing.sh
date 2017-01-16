@@ -1,0 +1,1 @@
+python inverse_characterization_espuma_preta.py && python inverse_characterization_fibra_amarela.py && python inverse_characterization_la32.py && python inverse_characterization_la64.py && python inverse_characterization_melamina.py && python inverse_characterization_melamina_30_amostras.py
