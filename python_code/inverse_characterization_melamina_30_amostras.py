@@ -106,7 +106,7 @@ if __name__ == "__main__":
 	#duplo = scipy.io.loadmat('../data/' + material_name + '/' + datas_materials_list[1])
 
 	# 3 - Indo para um tipo de amostra de um material
-	for numero_amostra in range(1, 6):
+	for numero_amostra in range(1, 31):
 		amostra = 'A_A' + str(numero_amostra)
 		A_referencia_esp1 = simples[amostra]
 		A_referencia_esp1 = np.ravel(A_referencia_esp1)
